@@ -2,11 +2,17 @@
 这是一个基于 **Redis Streams** 构建的分布式/并行机器学习实验框架。该项目演示了如何使用 Redis 作为消息中间件，将数据集分发给多个不同的算法模型（Worker），并行进行训练和评估，最后统一收集实验结果。
 
 ├── Dispatcher.py            # [生产者] 启动 Redis，读取 CSV，将数据写入 Stream
+
 ├── run_all.py               # [启动器] 一键并行启动所有算法 Worker
+
 ├── worker_rf.py             # [消费者] 随机森林算法 Worker
+
 ├── worker_svr.py            # [消费者] 支持向量机算法 Worker
+
 ├── worker_lr.py             # [消费者] 线性回归算法 Worker
+
 ├── Result Collector.py      # [收集器] 读取实验结果，保存 JSON，关闭 Redis
+
 └── training_results.json    # [输出] 最终生成的实验报告
 
 ### 第一步：分发数据 (Dispatcher)
