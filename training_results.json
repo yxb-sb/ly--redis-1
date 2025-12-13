@@ -1,0 +1,17 @@
+[
+  {
+    "algorithm": "LinearRegression",
+    "mse": 24.29111947497351,
+    "samples": 506
+  },
+  {
+    "algorithm": "SVR",
+    "mse": 25.693036656663203,
+    "samples": 506
+  },
+  {
+    "algorithm": "RandomForest",
+    "mse": 7.9271453333333355,
+    "samples": 506
+  }
+]
