@@ -4,10 +4,22 @@ from redis import Redis
 from sklearn.linear_model import LinearRegression # 导入线性回归
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
-
+import os
 # --- 配置 ---
-REDIS_HOST = "172.19.123.13"
-REDIS_PORT = 11451
+
+if not os.path.exists("after_settings"):
+    raise FileNotFoundError("未找到 after_settings 文件")
+
+with open("after_settings", "r") as f:
+    lines = [line.strip() for line in f.readlines()]
+
+if len(lines) != 2:
+    raise ValueError("after_settings 格式错误，必须两行：IP 和端口")
+
+REDIS_HOST = lines[0]
+REDIS_PORT = int(lines[1])
+
+
 TASK_STREAM = "tasks_stream"
 RESULTS_QUEUE = "results"
 TOTAL_EXPECTED = 506
