@@ -1,22 +1,16 @@
 # ly--redis-1
 这是一个基于 **Redis Streams** 构建的分布式/并行机器学习实验框架。该项目演示了如何使用 Redis 作为消息中间件，将数据集分发给多个不同的算法模型（Worker），并行进行训练和评估，最后统一收集实验结果。
 
-├── Dispatcher.py            # [生产者] 启动 Redis，读取 CSV，将数据写入 Stream
+├── Dispatcher.py            # [生产者] 启动 Redis，读取 CSV，读取before_settings，将数据写入 Stream,将预期算法同样写入队列
 
-├── run_all.py               # [启动器] 一键并行启动所有算法 Worker
-
-├── worker_rf.py             # [消费者] 随机森林算法 Worker
-
-├── worker_svr.py            # [消费者] 支持向量机算法 Worker
-
-├── worker_lr.py             # [消费者] 线性回归算法 Worker
+├── worker.py             # [消费者]拉取队列中的一个算法，并读取数据，将结果发送回队列
 
 ├── Result Collector.py      # [收集器] 读取实验结果，保存 JSON，关闭 Redis
 
 └── training_results.json    # [输出] 最终生成的实验报告
 
 ### 第一步：分发数据 (Dispatcher)
-运行调度器。它会尝试在本地启动一个 Redis 实例（端口 11451），读取 CSV 数据并推送到 Redis Stream 中。
+运行调度器。它会尝试在本地启动一个 Redis 实例（端口 11451），也有可能会使用已有redis，读取 CSV 数据并推送到 Redis Stream 中，同时把算法发送到队列总。
 
 ```bash
 python Dispatcher.py
@@ -25,12 +19,9 @@ python Dispatcher.py
 
 
 ### 第二步：并行训练 (Workers)
-运行启动脚本。它会自动寻找并并行启动三个算法 Worker (`rf`, `svr`, `lr`)。每个 Worker 会独立消费完整的数据副本进行训练。
+运行启动脚本。它会自动拉取队列中的一个算法开始训练。
 
-python run_all.py
 
-<img width="382" height="210" alt="image" src="https://github.com/user-attachments/assets/85fad240-a436-4b54-aaac-9f5c6030102b" />
-<img width="643" height="150" alt="image" src="https://github.com/user-attachments/assets/f3729fcc-bfed-4c3e-8135-2be6fa64ca81" />
 
 
 
@@ -49,8 +40,7 @@ python run_all.py
 *   **Stream samples**: 后续消息包含归一化后的特征值 (`feature_values`) 和目标值 (`target`)。
 
 ### 2. 广播机制 (Fan-out)
-为了让三个不同的算法都在**同一份数据**上进行训练，我们利用了 Redis Consumer Groups 的特性：
-*   每个 Worker 脚本使用**独立的 Group Name** (例如 `group_rf`, `group_svr`)。
+
 *   这确保了 Redis 会将流中的每一条消息都完整地分发给每个算法，而不是在算法之间进行负载均衡。
 
 ### 3. 游标重置
