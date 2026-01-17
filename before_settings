@@ -1,5 +1,7 @@
 0
-172.19.123.13
-11564
-SVM
-RandomForest
+
+
+{"task_name": "simple_add", "params": {"a": 1, "b": 1}}
+{"task_name": "shuffle_feature_test", "params": {"col_index": 5}}
+{"task_name": "pca_feature_extract", "params": {"n_components": 3}}
+{"task_name": "train_ml_model", "params": {"model_name": "RandomForest", "model_params": {"n_estimators": 10}}}
