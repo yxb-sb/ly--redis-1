@@ -11,6 +11,10 @@
 
 ├── task_definitions.py      # [词典] 储存对不同任务的处理代码
 
+├── Dockerfile        # [环境] 构建的docker镜像的dockerfile
+
+├── run.py            #[开关] 启动docker并执行任务
+
 └── training_results.json    # [输出] 最终生成的实验报告
 
 ### 第一步：分发数据 (Dispatcher)
